@@ -41,11 +41,6 @@ describe('compose()', () => {
 
             expect(server.connections).length(1);
             done();
-        })
-        .catch((err) => {
-
-            expect(err).to.not.exist();
-            done();
         });
     });
 
@@ -57,11 +52,6 @@ describe('compose()', () => {
         Glue.compose(manifest, options).then((server) => {
 
             expect(server.connections).length(1);
-            done();
-        })
-        .catch((err) => {
-
-            expect(err).to.not.exist();
             done();
         });
     });
@@ -76,15 +66,27 @@ describe('compose()', () => {
             ]
         };
 
-        Glue.compose(manifest).then((server) => {
-
-            expect(server).to.not.exist();
-            done();
-        })
-        .catch((err) => {
+        Glue.compose(manifest).catch((err) => {
 
             expect(err).to.exist();
             expect(err.code).to.equal('MODULE_NOT_FOUND');
+            done();
+        });
+    });
+
+    it('rejects a promise if an error is returned', (done) => {
+
+        const manifest = {};
+        const options = {
+            preRegister: function (server, callback) {
+
+                callback({ error: 'failed' });
+            }
+        };
+
+        Glue.compose(manifest, options).then(null, (err) => {
+
+            expect(err).to.exist();
             done();
         });
     });
