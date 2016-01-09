@@ -25,6 +25,8 @@ Composes a hapi server object where:
   * `err` - the error response if a failure occurred, otherwise `null`.
   * `server` - the server object. Call `server.start()` to actually start the server.
 
+If no `callback` is provided, a `Promise` object is returned.
+
 ### Notes
 
 If you are developing a plugin, ensure your plugin dependencies are properly managed to guarantee that all dependencies are loaded before your plugin registration completes.  See [`server.dependency(dependencies, [after])`](http://hapijs.com/api#serverdependencydependencies-after) for more information.

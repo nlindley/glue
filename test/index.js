@@ -33,6 +33,62 @@ describe('compose()', () => {
         });
     });
 
+    it('returns a promise if no options and no callback is provided', (done) => {
+
+        const manifest = {};
+
+        Glue.compose(manifest).then((server) => {
+
+            expect(server.connections).length(1);
+            done();
+        })
+        .catch((err) => {
+
+            expect(err).to.not.exist();
+            done();
+        });
+    });
+
+    it('returns a promise if no callback is provided', (done) => {
+
+        const manifest = {};
+        const options = {};
+
+        Glue.compose(manifest, options).then((server) => {
+
+            expect(server.connections).length(1);
+            done();
+        })
+        .catch((err) => {
+
+            expect(err).to.not.exist();
+            done();
+        });
+    });
+
+    it('rejects a promise if an error is thrown', (done) => {
+
+        const manifest = {
+            registrations: [
+                {
+                    plugin: './invalid-plugin'
+                }
+            ]
+        };
+
+        Glue.compose(manifest).then((server) => {
+
+            expect(server).to.not.exist();
+            done();
+        })
+        .catch((err) => {
+
+            expect(err).to.exist();
+            expect(err.code).to.equal('MODULE_NOT_FOUND');
+            done();
+        });
+    });
+
     it('composes a server with server.cache as a string', (done) => {
 
         const manifest = {
@@ -414,17 +470,6 @@ describe('compose()', () => {
 
             Glue.compose(manifest, 'hello', () => { });
         }).to.throw(/Invalid options/);
-        done();
-    });
-
-    it('throws on callback not a function', (done) => {
-
-        const manifest = {};
-
-        expect(() => {
-
-            Glue.compose(manifest, 'hello');
-        }).to.throw(/Invalid callback/);
         done();
     });
 
